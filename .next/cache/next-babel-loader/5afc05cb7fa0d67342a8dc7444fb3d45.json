@@ -1,0 +1,1 @@
+{"ast":null,"code":"function Index() {}\n\n_c = Index;\n\nvar _c;\n\n$RefreshReg$(_c, \"Index\");","map":{"version":3,"sources":["D:/code/sample-shopify-app/pages/index.js"],"names":["Index"],"mappings":"AAAA,SAASA,KAAT,GAAiB,CAEhB;;KAFQA,K","sourcesContent":["function Index() {\r\n    \r\n}"]},"metadata":{},"sourceType":"script"}
