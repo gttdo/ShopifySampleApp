@@ -1,11 +1,12 @@
 require('isomorphic-fetch');
+const dotenv = require('dotenv');
+const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
 const next = require('next');
-const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
-const dotenv = require('dotenv');
 const { verifyRequest } = require('@shopify/koa-shopify-auth');
 const session = require('koa-session');
+const koaBody = require('koa-body');
 
 dotenv.config();
 const {default: graphQLProxy, ApiVersion} = require('@shopify/koa-shopify-graphql-proxy');
@@ -21,12 +22,33 @@ const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 const router = new KoaRouter();
 const server = new Koa();
 
+var products = [];
+
 router.get('/api/products', async (ctx) => {
   try {
     ctx.body = {
       status: 'success',
-      data: 'Hello this is from the public API'
+      data: products
     };
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post('/api/products', koaBody(), async (ctx) => {
+  try {
+    const body = ctx.request.body;
+    products.push(body)
+    ctx.body = 'Item Added';
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.delete('/api/products', koaBody(), async (ctx) => {
+  try {
+    products = [];
+    ctx.body = 'All Items Deleted!'
   } catch (error) {
     console.log(error)
   }
@@ -66,8 +88,6 @@ app.prepare().then(() => {
 
   server.use(graphQLProxy({ version: ApiVersion.October20 }))
   server.use(verifyRequest());
-
-
 
   server.use(async (ctx) => {
     await handle(ctx.req, ctx.res);
